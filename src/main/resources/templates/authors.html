@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Authors')}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div style="max-width:1200px;margin:0 auto;padding:40px 24px;">
+
+  <h1 class="serif" style="font-size:2rem;font-weight:700;margin-bottom:8px;">Authors</h1>
+  <p style="font-size:14px;color:var(--ink-secondary);margin-bottom:36px;">
+    Meet the writers behind The Byline.
+  </p>
+
+  <!-- Empty state -->
+  <div th:if="${authors.empty}"
+       style="text-align:center;padding:64px 0;color:var(--ink-tertiary);font-size:14px;">
+    No authors yet.
+  </div>
+
+  <!-- Author grid -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+    <div th:each="author : ${authors}"
+         style="padding:24px;border-radius:12px;border:1px solid var(--surface-border);
+                display:flex;gap:16px;align-items:flex-start;">
+
+      <!-- Avatar / initials -->
+      <div style="flex-shrink:0;">
+        <img th:if="${author.avatarUrl != null and !#strings.isEmpty(author.avatarUrl)}"
+             th:src="${author.avatarUrl}"
+             th:alt="${author.displayName}"
+             style="width:48px;height:48px;border-radius:50%;object-fit:cover;display:block;"/>
+        <div th:unless="${author.avatarUrl != null and !#strings.isEmpty(author.avatarUrl)}"
+             style="width:48px;height:48px;border-radius:50%;background:var(--brand);
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:16px;font-weight:700;color:#fff;"
+             th:text="${#strings.toUpperCase(#strings.substring(author.displayName, 0,
+                         T(java.lang.Math).min(2, #strings.length(author.displayName))))}">
+          AB
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div style="min-width:0;">
+        <div style="font-size:15px;font-weight:600;color:var(--ink-primary);margin-bottom:2px;"
+             th:text="${author.displayName}">
+          Author Name
+        </div>
+        <div style="font-size:12px;color:var(--ink-tertiary);text-transform:capitalize;margin-bottom:8px;"
+             th:text="${#strings.toLowerCase(author.role.name())}">
+          author
+        </div>
+        <p th:if="${author.bio != null and !#strings.isEmpty(author.bio)}"
+           th:text="${#strings.abbreviate(author.bio, 120)}"
+           style="font-size:13px;color:var(--ink-secondary);line-height:1.55;margin:0 0 10px;">
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a th:href="@{/authors/{username}(username=${author.username})}"
+             style="font-size:12px;color:var(--brand);text-decoration:none;">
+            @<span th:text="${author.username}">username</span>
+          </a>
+          <a th:if="${author.websiteUrl != null and !#strings.isEmpty(author.websiteUrl)}"
+             th:href="${author.websiteUrl}"
+             target="_blank" rel="noopener noreferrer"
+             style="font-size:12px;color:var(--ink-tertiary);text-decoration:none;">
+            Website ↗
+          </a>
+          <a th:if="${author.twitterHandle != null and !#strings.isEmpty(author.twitterHandle)}"
+             th:href="'https://twitter.com/' + ${author.twitterHandle}"
+             target="_blank" rel="noopener noreferrer"
+             style="font-size:12px;color:var(--ink-tertiary);text-decoration:none;">
+            𝕏 <span th:text="${author.twitterHandle}">handle</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="padding:24px;text-align:center;color:var(--ink-tertiary);font-size:12px;
+               border-top:1px solid var(--surface-border);margin-top:40px;">
+  <span>© 2026 The Byline.</span>
+  <a href="/about"        style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">About</a>
+  <a href="/rss/feed.xml" style="color:var(--ink-tertiary);text-decoration:none;">RSS</a>
+</footer>
+
+</body>
+</html>

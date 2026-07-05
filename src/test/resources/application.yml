@@ -1,0 +1,35 @@
+# ── Test profile overrides ────────────────────────────────────────────────────
+# Loaded automatically by Spring Boot's test infrastructure.
+# Disables external services that aren't needed for unit/slice tests.
+
+spring:
+  profiles:
+    active: test
+
+  # Disable Spring AI auto-configurations (no API keys in CI)
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.openai.autoconfigure.OpenAiAutoConfiguration
+      - org.springframework.ai.anthropic.autoconfigure.AnthropicAutoConfiguration
+      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
+      - dev.langchain4j.openai.spring.AutoConfig
+
+  # Use a no-op cache so @WebMvcTest slices don't need Redis
+  cache:
+    type: simple
+
+  # Redis — disabled in sliced tests; @SpringBootTest integration tests
+  # override this with a real or Testcontainers Redis URL.
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  thymeleaf:
+    cache: false
+
+app:
+  security:
+    remember-me-key: test-remember-me-key-not-secret
+  base-url: http://localhost:8080
+  name: "The Byline Test"

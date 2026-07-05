@@ -1,0 +1,30 @@
+# ── Build ─────────────────────────────────────────────────────────────
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# ── Secrets ───────────────────────────────────────────────────────────
+.env
+*.pem
+*.key
+*.p12
+
+# ── IDE ───────────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+
+# ── VS Code (keep .vscode/ but ignore personal settings) ──────────────
+.vscode/settings.json.local
+
+# ── Logs ──────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Node (Tailwind build) ─────────────────────────────────────────────
+node_modules/
+dist/

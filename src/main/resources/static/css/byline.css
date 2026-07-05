@@ -1,0 +1,153 @@
+/*
+ * The Byline — base stylesheet
+ * Imports Google Fonts + defines CSS custom properties that
+ * Thymeleaf templates and Tailwind utilities both reference.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Inter:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens (dark theme — our primary) ─────────────────────── */
+
+:root {
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans:  'Inter', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Surfaces */
+  --color-surface:         #0F0F0F;
+  --color-surface-raised:  #181818;
+  --color-surface-overlay: #222222;
+  --color-border:          #2E2E2E;
+  --color-border-subtle:   #1F1F1F;
+
+  /* Ink */
+  --color-ink-primary:   #F2F2F0;
+  --color-ink-secondary: #A8A8A0;
+  --color-ink-tertiary:  #6A6A62;
+
+  /* Brand */
+  --color-brand:       #1D9E75;
+  --color-brand-dark:  #0F6E56;
+  --color-brand-light: #E1F5EE;
+
+  /* Topic tags */
+  --topic-technology-text: #5BA3E8;
+  --topic-technology-bg:   rgba(56, 138, 221, 0.12);
+  --topic-culture-text:    #E07FAA;
+  --topic-culture-bg:      rgba(212, 83, 126, 0.12);
+  --topic-science-text:    #E8A84A;
+  --topic-science-bg:      rgba(186, 117, 23, 0.12);
+  --topic-opinion-text:    #A89EE8;
+  --topic-opinion-bg:      rgba(127, 119, 221, 0.12);
+  --topic-environment-text: #4DC9A0;
+  --topic-environment-bg:  rgba(29, 158, 117, 0.12);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-ink-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Component layer ──────────────────────────────────────────────── */
+
+@layer components {
+
+  /* Topic tag pill */
+  .tag {
+    @apply inline-block text-label font-sans font-medium uppercase tracking-widest px-2 py-0.5 rounded-tag;
+  }
+  .tag-technology  { color: var(--topic-technology-text);  background: var(--topic-technology-bg);  }
+  .tag-culture     { color: var(--topic-culture-text);     background: var(--topic-culture-bg);     }
+  .tag-science     { color: var(--topic-science-text);     background: var(--topic-science-bg);     }
+  .tag-opinion     { color: var(--topic-opinion-text);     background: var(--topic-opinion-bg);     }
+  .tag-environment { color: var(--topic-environment-text); background: var(--topic-environment-bg); }
+
+  /* Article card */
+  .card {
+    @apply bg-surface-raised border border-surface-border rounded-card overflow-hidden
+           transition-colors duration-200 hover:border-surface-muted;
+  }
+
+  /* Author avatar circle */
+  .avatar {
+    @apply inline-flex items-center justify-center rounded-full font-sans font-medium
+           text-label shrink-0 select-none;
+  }
+
+  /* Paywall fade gate */
+  .paywall-fade {
+    position: relative;
+    overflow: hidden;
+  }
+  .paywall-fade::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--color-surface));
+    pointer-events: none;
+  }
+
+  /* Article body typography */
+  .article-body {
+    @apply font-sans text-body leading-relaxed text-ink-secondary;
+  }
+  .article-body p  { @apply mb-5; }
+  .article-body h2 { @apply font-serif text-h2 text-ink-primary mt-10 mb-4; }
+  .article-body h3 { @apply font-serif text-h3 text-ink-primary mt-8 mb-3; }
+  .article-body blockquote {
+    @apply border-l-2 border-brand pl-5 my-6 font-serif italic text-ink-secondary;
+  }
+  .article-body a {
+    @apply text-ink-primary underline underline-offset-2 decoration-surface-muted
+           hover:decoration-ink-secondary transition-colors;
+  }
+  .article-body .drop-cap::first-letter {
+    font-family: var(--font-serif);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 0.8;
+    float: left;
+    margin: 0.08em 0.08em 0 0;
+    color: var(--color-ink-primary);
+  }
+
+  /* Nav link */
+  .nav-link {
+    @apply text-caption text-ink-secondary hover:text-ink-primary transition-colors cursor-pointer;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-5 py-2 rounded-lg
+           bg-ink-primary text-surface font-sans text-caption font-medium
+           hover:bg-ink-secondary transition-colors cursor-pointer border-0;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-5 py-2 rounded-lg
+           bg-transparent text-ink-secondary font-sans text-caption font-medium
+           border border-surface-border hover:border-surface-muted
+           hover:text-ink-primary transition-colors cursor-pointer;
+  }
+  .btn-brand {
+    @apply inline-flex items-center justify-center px-5 py-2 rounded-lg
+           font-sans text-caption font-medium cursor-pointer border-0
+           transition-colors;
+    background: var(--color-brand);
+    color: #fff;
+  }
+  .btn-brand:hover { background: var(--color-brand-dark); }
+
+}

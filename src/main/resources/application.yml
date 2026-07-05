@@ -1,0 +1,192 @@
+spring:
+  application:
+    name: the-byline
+  profiles:
+    default: dev     # override with -Dspring.profiles.active=prod in production
+  main:
+    allow-bean-definition-overriding: true
+    lazy-initialization: true   # defer AI bean init until API keys are present
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.openai.autoconfigure.OpenAiAutoConfiguration
+      - org.springframework.ai.anthropic.autoconfigure.AnthropicAutoConfiguration
+      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
+      - dev.langchain4j.openai.spring.AutoConfig
+
+  # ── Datasource ────────────────────────────────────────────────────────
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:thebyline}
+    username: ${DB_USER:thebyline}
+    password: ${DB_PASS:thebyline}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  # ── JPA ───────────────────────────────────────────────────────────────
+  jpa:
+    hibernate:
+      ddl-auto: validate          # Flyway owns DDL — never let Hibernate touch it
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_batch_fetch_size: 20
+    open-in-view: false           # avoid implicit lazy loading in views
+
+  # ── Flyway ────────────────────────────────────────────────────────────
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+    validate-on-migrate: true
+
+  # ── Redis ─────────────────────────────────────────────────────────────
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASS:}
+      timeout: 2000ms
+
+  # ── Thymeleaf ─────────────────────────────────────────────────────────
+  thymeleaf:
+    cache: false                  # set to true in prod via profile
+    encoding: UTF-8
+    mode: HTML
+
+  # ── Mail (Mailpit in dev, SendGrid in prod via profile override) ─────
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USER:}
+    password: ${MAIL_PASS:}
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+  # ── File upload limits ────────────────────────────────────────────────
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+
+# ── Server ───────────────────────────────────────────────────────────────
+server:
+  port: ${PORT:8080}
+  compression:
+    enabled: true
+    mime-types: text/html,text/css,application/javascript,application/json
+    min-response-size: 1024
+  error:
+    whitelabel:
+      enabled: false
+    # BUG-008 fix: never expose stack traces or internal messages to the browser
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
+    include-exception: false
+  forward-headers-strategy: native   # trust X-Forwarded-* from reverse proxy
+
+# ── Actuator ─────────────────────────────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,caches
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false   # SendGrid key not needed in local dev (Mailpit handles email)
+
+# ── Spring AI ─────────────────────────────────────────────────────────────
+spring.ai:
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    chat:
+      options:
+        model: gpt-4o
+        temperature: 0.7
+    embedding:
+      options:
+        model: text-embedding-3-small
+  anthropic:
+    api-key: ${ANTHROPIC_API_KEY:}
+    chat:
+      options:
+        model: claude-opus-4-8
+  vectorstore:
+    pgvector:
+      index-type: HNSW
+      distance-type: COSINE_DISTANCE
+      dimensions: 1536
+
+# ── LangChain4j ──────────────────────────────────────────────────────────
+langchain4j:
+  open-ai:
+    chat-model:
+      api-key: ${OPENAI_API_KEY:}
+      model-name: gpt-4o
+      temperature: 0.7
+      log-requests: false
+      log-responses: false
+
+# ── App-specific config ───────────────────────────────────────────────────
+app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
+  name: "The Byline"
+
+  security:
+    remember-me-key: ${REMEMBER_ME_KEY:change-me-in-production}
+
+  storage:
+    s3:
+      bucket: ${S3_BUCKET:thebyline-media}
+      region: ${AWS_REGION:us-east-1}
+      endpoint: ${S3_ENDPOINT:}          # set for S3-compatible (e.g., MinIO)
+      access-key: ${AWS_ACCESS_KEY_ID:}
+      secret-key: ${AWS_SECRET_ACCESS_KEY:}
+      public-url: ${CDN_URL:}
+
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+    subscription-price-id: ${STRIPE_PRICE_ID:}
+
+  newsletter:
+    from-email: "newsletter@thebyline.com"
+    from-name: "The Byline"
+    buttondown-api-key: ${BUTTONDOWN_API_KEY:}
+
+  plausible:
+    domain: ${PLAUSIBLE_DOMAIN:thebyline.com}
+    script-url: ${PLAUSIBLE_SCRIPT_URL:https://plausible.io/js/script.js}
+
+  comments:
+    moderation: AUTO          # AUTO = ai-assisted; MANUAL = queue everything
+    spam-threshold: 0.85      # flag as spam if ai score >= this
+
+---
+# ── Production profile overrides ────────────────────────────────────────
+spring:
+  config:
+    activate:
+      on-profile: prod
+  thymeleaf:
+    cache: true
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when-authorized   # don't expose DB/Redis details publicly in prod

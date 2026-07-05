@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Archive')}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div style="max-width:800px;margin:0 auto;padding:40px 24px;">
+
+  <h1 class="serif" style="font-size:2rem;font-weight:700;margin-bottom:8px;">Archive</h1>
+  <p style="font-size:14px;color:var(--ink-secondary);margin-bottom:36px;">
+    Everything published on The Byline, newest first.
+  </p>
+
+  <!-- Empty state -->
+  <div th:if="${posts.empty}"
+       style="text-align:center;padding:64px 0;color:var(--ink-tertiary);font-size:14px;">
+    Nothing published yet — check back soon.
+  </div>
+
+  <!-- Post list -->
+  <div style="display:flex;flex-direction:column;gap:0;">
+    <a th:each="post, iter : ${posts.content}"
+       th:href="@{/articles/{slug}(slug=${post.slug})}"
+       style="text-decoration:none;display:flex;align-items:baseline;justify-content:space-between;
+              gap:16px;padding:14px 0;border-bottom:1px solid var(--surface-border);">
+      <span style="font-size:15px;color:var(--ink-primary);font-weight:500;line-height:1.4;"
+            th:text="${post.title}">Post title</span>
+      <span style="white-space:nowrap;font-size:12px;color:var(--ink-tertiary);flex-shrink:0;"
+            th:text="${post.publishedAtFormatted}">Jan 1</span>
+    </a>
+  </div>
+
+  <!-- Pagination -->
+  <div th:if="${posts.totalPages > 1}"
+       style="display:flex;justify-content:space-between;align-items:center;
+              margin-top:32px;font-size:13px;">
+    <a th:if="${currentPage > 0}"
+       th:href="@{/archive(page=${currentPage - 1})}"
+       style="color:var(--brand);text-decoration:none;">← Newer</a>
+    <span th:unless="${currentPage > 0}"></span>
+
+    <span style="color:var(--ink-tertiary);">
+      Page <span th:text="${currentPage + 1}">1</span> of
+      <span th:text="${posts.totalPages}">1</span>
+    </span>
+
+    <a th:if="${!posts.last}"
+       th:href="@{/archive(page=${currentPage + 1})}"
+       style="color:var(--brand);text-decoration:none;">Older →</a>
+    <span th:if="${posts.last}"></span>
+  </div>
+
+</div>
+
+<footer style="padding:24px;text-align:center;color:var(--ink-tertiary);font-size:12px;
+               border-top:1px solid var(--surface-border);margin-top:40px;">
+  <span>© 2026 The Byline.</span>
+  <a href="/about"        style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">About</a>
+  <a href="/rss/feed.xml" style="color:var(--ink-tertiary);text-decoration:none;">RSS</a>
+</footer>
+
+</body>
+</html>

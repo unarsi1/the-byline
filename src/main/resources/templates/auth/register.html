@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Subscribe')}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div style="max-width:400px;margin:64px auto;padding:0 24px;">
+
+  <h1 class="serif" style="font-size:1.8rem;font-weight:700;margin-bottom:8px;text-align:center;">
+    Create your account
+  </h1>
+  <p style="text-align:center;font-size:13px;color:var(--ink-secondary);margin-bottom:32px;">
+    Join The Byline — free forever
+  </p>
+
+  <!-- Error -->
+  <div th:if="${error}"
+       style="background:rgba(212,83,126,.12);border:1px solid rgba(212,83,126,.3);
+              border-radius:8px;padding:12px 16px;margin-bottom:20px;
+              font-size:13px;color:#E07FAA;"
+       th:text="${error}">
+  </div>
+
+  <form th:action="@{/auth/register}" method="post"
+        style="display:flex;flex-direction:column;gap:16px;">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <div>
+      <label style="font-size:12px;color:var(--ink-secondary);display:block;margin-bottom:6px;">
+        Display name
+      </label>
+      <!-- BUG-002/003 fix: retain value on server-side error -->
+      <input type="text" name="displayName" required autofocus
+             th:value="${displayName}"
+             style="width:100%;font-size:14px;padding:10px 14px;
+                    border:1px solid var(--surface-border);border-radius:8px;
+                    background:var(--surface-raised);color:var(--ink-primary);
+                    font-family:'Inter',sans-serif;box-sizing:border-box;"/>
+    </div>
+
+    <div>
+      <label style="font-size:12px;color:var(--ink-secondary);display:block;margin-bottom:6px;">
+        Username
+      </label>
+      <input type="text" name="username" required pattern="[a-zA-Z0-9_]+"
+             title="Letters, numbers, and underscores only"
+             th:value="${username}"
+             style="width:100%;font-size:14px;padding:10px 14px;
+                    border:1px solid var(--surface-border);border-radius:8px;
+                    background:var(--surface-raised);color:var(--ink-primary);
+                    font-family:'Inter',sans-serif;box-sizing:border-box;"/>
+    </div>
+
+    <div>
+      <label style="font-size:12px;color:var(--ink-secondary);display:block;margin-bottom:6px;">
+        Email
+      </label>
+      <input type="email" name="email" required
+             th:value="${email}"
+             style="width:100%;font-size:14px;padding:10px 14px;
+                    border:1px solid var(--surface-border);border-radius:8px;
+                    background:var(--surface-raised);color:var(--ink-primary);
+                    font-family:'Inter',sans-serif;box-sizing:border-box;"/>
+    </div>
+
+    <div>
+      <label style="font-size:12px;color:var(--ink-secondary);display:block;margin-bottom:6px;">
+        Password
+      </label>
+      <input type="password" name="password" required minlength="8"
+             style="width:100%;font-size:14px;padding:10px 14px;
+                    border:1px solid var(--surface-border);border-radius:8px;
+                    background:var(--surface-raised);color:var(--ink-primary);
+                    font-family:'Inter',sans-serif;box-sizing:border-box;"/>
+    </div>
+
+    <button type="submit"
+            style="width:100%;font-size:14px;padding:11px;border-radius:8px;
+                   background:var(--brand);color:#fff;border:none;
+                   cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;">
+      Create account
+    </button>
+  </form>
+
+  <p style="text-align:center;font-size:13px;color:var(--ink-secondary);margin-top:24px;">
+    Already have an account?
+    <a href="/auth/login"
+       style="color:var(--brand);text-decoration:none;font-weight:500;">
+      Sign in
+    </a>
+  </p>
+
+</div>
+
+<footer style="padding:24px;text-align:center;color:var(--ink-tertiary);font-size:12px;
+               border-top:1px solid var(--surface-border);margin-top:64px;">
+  <span>© 2026 The Byline.</span>
+  <a href="/about" style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">About</a>
+  <a href="/rss/feed.xml" style="color:var(--ink-tertiary);text-decoration:none;">RSS</a>
+</footer>
+
+</body>
+</html>

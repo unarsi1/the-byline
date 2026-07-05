@@ -1,0 +1,81 @@
+services:
+
+  # ── PostgreSQL 16 with pgvector ─────────────────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: byline-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       thebyline
+      POSTGRES_USER:     thebyline
+      POSTGRES_PASSWORD: thebyline
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thebyline -d thebyline"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: byline-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── App (production-style build) ─────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: byline-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST:     postgres
+      DB_PORT:     5432
+      DB_NAME:     thebyline
+      DB_USER:     thebyline
+      DB_PASS:     thebyline
+      REDIS_HOST:  redis
+      REDIS_PORT:  6379
+      # Supply real secrets via .env or secret manager in prod
+      APP_BASE_URL:          ${APP_BASE_URL:-http://localhost:8080}
+      OPENAI_API_KEY:        ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY:     ${ANTHROPIC_API_KEY:-}
+      STRIPE_SECRET_KEY:     ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_PRICE_ID:       ${STRIPE_PRICE_ID:-}
+      SENDGRID_API_KEY:      ${SENDGRID_API_KEY:-}
+      AWS_ACCESS_KEY_ID:     ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      S3_BUCKET:             ${S3_BUCKET:-thebyline-media}
+      AWS_REGION:            ${AWS_REGION:-us-east-1}
+      REMEMBER_ME_KEY:       ${REMEMBER_ME_KEY:-change-me}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  redis_data:

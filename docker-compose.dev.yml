@@ -1,0 +1,45 @@
+# Local dev override — run with:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# This starts only the backing services (Postgres + Redis).
+# The Spring Boot app runs directly on your machine via:
+#   ./mvnw spring-boot:run
+# which gives you hot-reload via DevTools.
+
+services:
+  app:
+    # Disable the app container in dev — run it locally instead
+    profiles: ["disabled"]
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  # ── MinIO — local S3-compatible storage ──────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: byline-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER:     minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web console → http://localhost:9001
+    volumes:
+      - minio_data:/data
+
+  # ── Mailpit — local email capture (replaces SendGrid in dev) ─────────
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: byline-mailpit
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI → http://localhost:8025
+
+volumes:
+  minio_data:

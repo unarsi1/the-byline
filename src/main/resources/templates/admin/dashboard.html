@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Admin')}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div style="max-width:1100px;margin:0 auto;padding:36px 24px 80px;">
+
+  <h1 class="serif" style="font-size:1.8rem;font-weight:700;margin-bottom:8px;">Admin</h1>
+  <p style="font-size:13px;color:var(--ink-secondary);margin-bottom:36px;">
+    Site overview and management.
+  </p>
+
+  <!-- Stats row -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:36px;">
+    <div style="padding:20px;border-radius:10px;border:1px solid var(--surface-border);">
+      <div style="font-size:28px;font-weight:700;" th:text="${users.size()}">0</div>
+      <div style="font-size:12px;color:var(--ink-tertiary);margin-top:4px;">Total users</div>
+    </div>
+    <div style="padding:20px;border-radius:10px;border:1px solid var(--surface-border);">
+      <div style="font-size:28px;font-weight:700;" th:text="${posts.totalElements}">0</div>
+      <div style="font-size:12px;color:var(--ink-tertiary);margin-top:4px;">Total posts</div>
+    </div>
+    <div style="padding:20px;border-radius:10px;border:1px solid var(--surface-border);">
+      <div style="font-size:28px;font-weight:700;color:#D4537E;" th:text="${reviewCount}">0</div>
+      <div style="font-size:12px;color:var(--ink-tertiary);margin-top:4px;">Awaiting review</div>
+    </div>
+    <div style="padding:20px;border-radius:10px;border:1px solid var(--surface-border);">
+      <div style="font-size:28px;font-weight:700;color:var(--ink-tertiary);" th:text="${draftCount}">0</div>
+      <div style="font-size:12px;color:var(--ink-tertiary);margin-top:4px;">Drafts</div>
+    </div>
+  </div>
+
+  <!-- Two-column layout -->
+  <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:24px;align-items:start;">
+
+    <!-- Users -->
+    <section>
+      <h2 style="font-size:14px;font-weight:600;margin-bottom:12px;">Users</h2>
+      <div style="border:1px solid var(--surface-border);border-radius:10px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:var(--surface-raised);border-bottom:1px solid var(--surface-border);">
+              <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Name</th>
+              <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Role</th>
+              <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="u, i : ${users}"
+                th:style="${i.odd ? 'background:var(--surface-raised)' : ''}">
+              <td style="padding:10px 14px;font-weight:500;" th:text="${u.displayName}">Name</td>
+              <td style="padding:10px 14px;">
+                <span th:text="${#strings.toLowerCase(u.role.name())}"
+                      th:style="${u.role.name() == 'ADMIN'  ? 'color:#D4537E;font-weight:600;' :
+                                  u.role.name() == 'EDITOR' ? 'color:#378ADD;font-weight:600;' :
+                                  u.role.name() == 'AUTHOR' ? 'color:#1D9E75;font-weight:600;' :
+                                  'color:var(--ink-tertiary);'}">
+                  reader
+                </span>
+              </td>
+              <td style="padding:10px 14px;color:var(--ink-tertiary);" th:text="${u.email}">email</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Posts -->
+    <section>
+      <h2 style="font-size:14px;font-weight:600;margin-bottom:12px;">Recent posts</h2>
+      <div style="border:1px solid var(--surface-border);border-radius:10px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:var(--surface-raised);border-bottom:1px solid var(--surface-border);">
+              <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Title</th>
+              <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Author</th>
+              <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Status</th>
+              <th style="text-align:right;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Views</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="p, i : ${posts.content}"
+                th:style="${i.odd ? 'background:var(--surface-raised)' : ''}">
+              <td style="padding:10px 14px;">
+                <a th:if="${p.status.name() == 'PUBLISHED'}"
+                   th:href="@{/articles/{slug}(slug=${p.slug})}"
+                   th:text="${#strings.abbreviate(p.title, 45)}"
+                   style="color:var(--ink-primary);text-decoration:none;font-weight:500;">Title</a>
+                <span th:unless="${p.status.name() == 'PUBLISHED'}"
+                      th:text="${#strings.abbreviate(p.title, 45)}"
+                      style="color:var(--ink-secondary);font-weight:500;">Title</span>
+              </td>
+              <td style="padding:10px 14px;color:var(--ink-tertiary);"
+                  th:text="${p.author?.displayName ?: '—'}">Author</td>
+              <td style="padding:10px 14px;">
+                <span th:text="${#strings.toLowerCase(p.status.name())}"
+                      th:style="${p.status.name() == 'PUBLISHED'  ? 'color:#1D9E75;font-weight:600;' :
+                                  p.status.name() == 'IN_REVIEW'   ? 'color:#D4537E;font-weight:600;' :
+                                  'color:var(--ink-tertiary);'}">
+                  draft
+                </span>
+              </td>
+              <td style="padding:10px 14px;text-align:right;color:var(--ink-tertiary);"
+                  th:text="${p.viewCount}">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div th:if="${posts.totalPages > 1}"
+           style="display:flex;justify-content:space-between;margin-top:12px;font-size:12px;">
+        <a th:if="${currentPage > 0}" th:href="@{/admin(page=${currentPage-1})}"
+           style="color:var(--brand);text-decoration:none;">← Prev</a>
+        <span th:unless="${currentPage > 0}"></span>
+        <span style="color:var(--ink-tertiary);">
+          <span th:text="${currentPage+1}">1</span>/<span th:text="${posts.totalPages}">1</span>
+        </span>
+        <a th:if="${!posts.last}" th:href="@{/admin(page=${currentPage+1})}"
+           style="color:var(--brand);text-decoration:none;">Next →</a>
+        <span th:if="${posts.last}"></span>
+      </div>
+    </section>
+  </div>
+
+</div>
+</body>
+</html>

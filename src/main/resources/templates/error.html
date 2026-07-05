@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Something went wrong')}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div style="max-width:480px;margin:96px auto;padding:0 24px;text-align:center;">
+
+  <!-- Error code badge -->
+  <div style="font-size:72px;font-weight:700;color:var(--surface-border);
+              font-family:'Playfair Display',Georgia,serif;line-height:1;margin-bottom:24px;"
+       th:text="${status ?: ''}">
+    500
+  </div>
+
+  <h1 class="serif" style="font-size:1.6rem;font-weight:700;margin-bottom:12px;">
+    <span th:switch="${status}">
+      <span th:case="404">Page not found</span>
+      <span th:case="403">Access denied</span>
+      <span th:case="*">Something went wrong</span>
+    </span>
+  </h1>
+
+  <p style="font-size:14px;color:var(--ink-secondary);line-height:1.65;margin-bottom:32px;">
+    <span th:switch="${status}">
+      <span th:case="404">
+        The page you're looking for doesn't exist or may have moved.
+      </span>
+      <span th:case="403">
+        You don't have permission to view this page. If you think this is a mistake,
+        please <a href="/auth/login" style="color:var(--brand);">sign in</a> with an appropriate account.
+      </span>
+      <span th:case="*">
+        We hit an unexpected error. Our team has been notified.
+        Please try again in a moment.
+      </span>
+    </span>
+  </p>
+
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="/"
+       style="font-size:13px;padding:10px 22px;border-radius:8px;
+              background:var(--brand);color:#fff;text-decoration:none;font-weight:500;">
+      Go home
+    </a>
+    <a href="javascript:history.back()"
+       style="font-size:13px;padding:10px 22px;border-radius:8px;
+              border:1px solid var(--surface-border);color:var(--ink-secondary);text-decoration:none;">
+      Go back
+    </a>
+  </div>
+
+</div>
+
+<footer style="padding:24px;text-align:center;color:var(--ink-tertiary);font-size:12px;
+               border-top:1px solid var(--surface-border);margin-top:80px;">
+  <span>© 2026 The Byline.</span>
+  <a href="/about"      style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">About</a>
+  <a href="/rss/feed.xml" style="color:var(--ink-tertiary);text-decoration:none;">RSS</a>
+</footer>
+
+</body>
+</html>

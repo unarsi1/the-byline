@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${title} + ' — The Byline'">The Byline</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&amp;family=Inter:wght@400;500&amp;display=swap"
+        rel="stylesheet"/>
+
+  <!-- Compiled Tailwind bundle (rebuild with `npm run css:build` after template changes) -->
+  <link rel="stylesheet" th:href="@{/css/app.css}" href="/css/app.css"/>
+
+  <!-- Design tokens -->
+  <style>
+    :root {
+      --surface:        #0F0F0F;
+      --surface-raised: #181818;
+      --surface-border: #2A2A2A;
+      --ink-primary:    #F2F2F0;
+      --ink-secondary:  #A8A8A0;
+      --ink-tertiary:   #5A5A52;
+      --brand:          #1D9E75;
+    }
+    html { background: var(--surface); color: var(--ink-primary); }
+    body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+    /* Topic tag colors */
+    .tag-technology  { color:#5BA3E8; background:rgba(56,138,221,.12); }
+    .tag-culture     { color:#E07FAA; background:rgba(212,83,126,.12);  }
+    .tag-science     { color:#E8A84A; background:rgba(186,117,23,.12);  }
+    .tag-opinion     { color:#A89EE8; background:rgba(127,119,221,.12); }
+    .tag-environment { color:#4DC9A0; background:rgba(29,158,117,.12);  }
+
+    .tag {
+      display:inline-block; font-size:10px; text-transform:uppercase;
+      letter-spacing:.1em; padding:3px 8px; border-radius:4px; font-weight:500;
+    }
+    .serif { font-family:'Playfair Display', Georgia, serif; }
+    .card-hover { transition: border-color .15s; }
+    .card-hover:hover { border-color:#3A3A3A; }
+
+    /* Paywall fade */
+    .paywall-fade { position:relative; overflow:hidden; max-height:120px; }
+    .paywall-fade::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:80px;
+      background:linear-gradient(to bottom, transparent, var(--surface));
+    }
+  </style>
+
+  <!-- HTMX -->
+  <script th:src="@{/webjars/htmx.org/dist/htmx.min.js}" defer="defer"></script>
+  <!-- Alpine.js -->
+  <script th:src="@{/webjars/alpinejs/dist/cdn.min.js}" defer="defer"></script>
+</head>
+</html>

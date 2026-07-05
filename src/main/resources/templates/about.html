@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('About')}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<div style="max-width:680px;margin:0 auto;padding:64px 24px;">
+
+  <!-- Masthead -->
+  <div style="margin-bottom:48px;">
+    <h1 class="serif" style="font-size:2.4rem;font-weight:700;margin-bottom:16px;line-height:1.2;">
+      About The Byline
+    </h1>
+    <p style="font-size:16px;color:var(--ink-secondary);line-height:1.75;">
+      The Byline is an independent multi-author publishing platform built for writers who care
+      about craft. No algorithm-chasing, no engagement bait — just thoughtful work, published
+      with intention.
+    </p>
+  </div>
+
+  <!-- Divider -->
+  <hr style="border:none;border-top:1px solid var(--surface-border);margin-bottom:40px;"/>
+
+  <!-- Mission -->
+  <section style="margin-bottom:40px;">
+    <h2 class="serif" style="font-size:1.3rem;font-weight:700;margin-bottom:12px;">What we believe</h2>
+    <p style="font-size:14px;color:var(--ink-secondary);line-height:1.75;margin-bottom:12px;">
+      Good writing deserves a stable home. We built The Byline so editors and authors can
+      collaborate without the distraction of social-media metrics, and so readers can find
+      content worth their attention.
+    </p>
+    <p style="font-size:14px;color:var(--ink-secondary);line-height:1.75;">
+      Every piece goes through an editorial review before it reaches our homepage.
+      We believe that process — slow by internet standards — is exactly the point.
+    </p>
+  </section>
+
+  <!-- Team CTA -->
+  <section style="margin-bottom:40px;">
+    <h2 class="serif" style="font-size:1.3rem;font-weight:700;margin-bottom:12px;">Who writes here</h2>
+    <p style="font-size:14px;color:var(--ink-secondary);line-height:1.75;margin-bottom:16px;">
+      Our contributors span technology, culture, science, and the arts.
+      Each brings a distinct voice and a commitment to accuracy.
+    </p>
+    <a href="/authors"
+       style="font-size:13px;font-weight:500;color:var(--brand);text-decoration:none;">
+      Meet the authors →
+    </a>
+  </section>
+
+  <!-- Contact -->
+  <section style="margin-bottom:40px;">
+    <h2 class="serif" style="font-size:1.3rem;font-weight:700;margin-bottom:12px;">Get in touch</h2>
+    <p style="font-size:14px;color:var(--ink-secondary);line-height:1.75;">
+      Pitches, corrections, and general enquiries:
+      <a href="mailto:hello@thebyline.com"
+         style="color:var(--brand);text-decoration:none;">hello@thebyline.com</a>
+    </p>
+  </section>
+
+  <hr style="border:none;border-top:1px solid var(--surface-border);margin-bottom:32px;"/>
+
+  <!-- Subscribe nudge -->
+  <div style="background:var(--surface-raised);border:1px solid var(--surface-border);
+              border-radius:12px;padding:28px 24px;text-align:center;">
+    <h3 class="serif" style="font-size:1.1rem;font-weight:700;margin-bottom:8px;">
+      Stay in the loop
+    </h3>
+    <p style="font-size:13px;color:var(--ink-secondary);margin-bottom:16px;">
+      New pieces delivered to your inbox. No noise.
+    </p>
+    <a href="/auth/register"
+       style="display:inline-block;font-size:13px;font-weight:500;padding:10px 24px;
+              border-radius:8px;background:var(--ink-primary);color:var(--surface);
+              text-decoration:none;">
+      Subscribe — it's free
+    </a>
+  </div>
+
+</div>
+
+<footer style="padding:24px;text-align:center;color:var(--ink-tertiary);font-size:12px;
+               border-top:1px solid var(--surface-border);margin-top:0;">
+  <span>© 2026 The Byline.</span>
+  <a href="/topics"       style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">Topics</a>
+  <a href="/authors"      style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">Authors</a>
+  <a href="/archive"      style="color:var(--ink-tertiary);text-decoration:none;margin-right:12px;">Archive</a>
+  <a href="/rss/feed.xml" style="color:var(--ink-tertiary);text-decoration:none;">RSS</a>
+</footer>
+
+</body>
+</html>

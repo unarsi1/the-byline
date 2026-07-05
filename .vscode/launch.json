@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run The Byline",
+      "request": "launch",
+      "mainClass": "com.thebyline.TheBylineApplication",
+      "projectName": "the-byline",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": "-Dspring.profiles.active=default",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "java",
+      "name": "Debug The Byline",
+      "request": "launch",
+      "mainClass": "com.thebyline.TheBylineApplication",
+      "projectName": "the-byline",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": "-Dspring.profiles.active=default -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005",
+      "console": "integratedTerminal"
+    }
+  ]
+}

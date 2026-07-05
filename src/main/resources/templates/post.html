@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head(${post.metaTitle ?: post.title})}"></head>
+<body style="background:var(--surface);min-height:100vh;">
+
+<div th:replace="~{fragments/nav :: nav}"></div>
+
+<article style="max-width:720px;margin:0 auto;padding:40px 24px 80px;">
+
+  <!-- Category tag -->
+  <div th:if="${post.category}" style="margin-bottom:16px;">
+    <a th:href="@{/topics/{slug}(slug=${post.category.slug})}"
+       th:text="${post.category.name}"
+       th:style="${post.category.colorHex != null ?
+           'color:' + post.category.colorHex + ';background:' + (post.category.bgHex ?: 'rgba(90,90,90,.12)') + ';' : ''}"
+       style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+              padding:4px 10px;border-radius:20px;text-decoration:none;">
+      Topic
+    </a>
+  </div>
+
+  <!-- Title -->
+  <h1 class="serif" style="font-size:2.2rem;font-weight:700;line-height:1.25;margin-bottom:12px;"
+      th:text="${post.title}">Article title</h1>
+
+  <!-- Subtitle -->
+  <p th:if="${post.subtitle}"
+     th:text="${post.subtitle}"
+     style="font-size:1.15rem;color:var(--ink-secondary);line-height:1.55;margin-bottom:20px;">
+  </p>
+
+  <!-- Byline -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;
+              padding-bottom:24px;border-bottom:1px solid var(--surface-border);">
+
+    <!-- Author avatar / initials -->
+    <div th:if="${post.author}">
+      <img th:if="${post.author.avatarUrl != null and !#strings.isEmpty(post.author.avatarUrl)}"
+           th:src="${post.author.avatarUrl}"
+           th:alt="${post.author.displayName}"
+           style="width:40px;height:40px;border-radius:50%;object-fit:cover;"/>
+      <div th:unless="${post.author.avatarUrl != null and !#strings.isEmpty(post.author.avatarUrl)}"
+           th:text="${post.authorInitials}"
+           style="width:40px;height:40px;border-radius:50%;background:var(--brand);
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:14px;font-weight:700;color:#fff;">
+        AB
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:14px;font-weight:600;color:var(--ink-primary);"
+           th:text="${post.author?.displayName ?: 'The Byline'}">Author Name</div>
+      <div style="font-size:12px;color:var(--ink-tertiary);">
+        <span th:text="${post.publishedAtFormatted}">Jun 1</span>
+        <span th:if="${post.estimatedReadMinutes > 0}">
+          · <span th:text="${post.estimatedReadMinutes}">5</span> min read
+        </span>
+        <span th:if="${post.viewCount > 0}">
+          · <span th:text="${post.viewCount}">0</span> views
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cover image -->
+  <figure th:if="${post.coverImageUrl != null and !#strings.isEmpty(post.coverImageUrl)}"
+          style="margin:0 0 32px;border-radius:12px;overflow:hidden;">
+    <img th:src="${post.coverImageUrl}"
+         th:alt="${post.coverImageAlt ?: post.title}"
+         style="width:100%;max-height:480px;object-fit:cover;display:block;"/>
+  </figure>
+
+  <!-- Body -->
+  <div th:if="${post.bodyHtml != null and !#strings.isEmpty(post.bodyHtml)}"
+       th:utext="${post.bodyHtml}"
+       style="font-size:17px;line-height:1.75;color:var(--ink-primary);">
+  </div>
+  <div th:unless="${post.bodyHtml != null and !#strings.isEmpty(post.bodyHtml)}"
+       style="font-size:17px;line-height:1.75;color:var(--ink-secondary);
+              text-align:center;padding:48px 0;font-style:italic;">
+    Content coming soon.
+  </div>
+
+  <!-- Author bio -->
+  <div th:if="${post.author?.bio != null and !#strings.isEmpty(post.author.bio)}"
+       style="margin-top:48px;padding:24px;border-radius:12px;
+              background:var(--surface-raised);border:1px solid var(--surface-border);
+              display:flex;gap:16px;align-items:flex-start;">
+    <div style="flex-shrink:0;">
+      <img th:if="${post.author.avatarUrl != null and !#strings.isEmpty(post.author.avatarUrl)}"
+           th:src="${post.author.avatarUrl}"
+           th:alt="${post.author.displayName}"
+           style="width:48px;height:48px;border-radius:50%;object-fit:cover;"/>
+      <div th:unless="${post.author.avatarUrl != null and !#strings.isEmpty(post.author.avatarUrl)}"
+           th:text="${post.authorInitials}"
+           style="width:48px;height:48px;border-radius:50%;background:var(--brand);
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:16px;font-weight:700;color:#fff;">AB</div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--ink-primary);margin-bottom:4px;"
+           th:text="${post.author.displayName}">Author</div>
+      <p th:text="${post.author.bio}"
+         style="font-size:13px;color:var(--ink-secondary);line-height:1.6;margin:0;">
+      </p>
+    </div>
+  </div>
+
+</article>
+
+<!-- Related posts -->
+<section th:if="${!related.empty}"
+         style="border-top:1px solid var(--surface-border);padding:40px 24px 64px;">
+  <div style="max-width:720px;margin:0 auto;">
+    <h2 class="serif" style="font-size:1.2rem;font-weight:700;margin-bottom:24px;">
+      More from <span th:text="${post.category?.name ?: 'The Byline'}">Category</span>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">
+      <a th:each="rel : ${related}"
+         th:href="@{/articles/{slug}(slug=${rel.slug})}"
+         style="text-decoration:none;padding:16px;border-radius:10px;
+                border:1px solid var(--surface-border);display:block;">
+        <div th:if="${rel.category}"
+             th:text="${rel.category.name}"
+             style="font-size:10px;font-weight:600;letter-spacing:.06em;
+                    text-transform:uppercase;color:var(--ink-tertiary);margin-bottom:6px;">
+        </div>
+        <div style="font-size:14px;font-weight:600;color:var(--ink-primary);
+                    line-height:1.35;margin-bottom:6px;"
+             th:text="${rel.title}">Title</div>
+        <div style="font-size:11px;color:var(--ink-tertiary);"
+             th:text="${rel.publishedAtFormatted}">Jun 1</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer style="padding:24px;text-align:center;color:var(--ink-tertiary);font-size:12px;
+               border-top:1px solid var(--surface-border);">
+  <span>© 2026 The Byline.</span>
+  <a href="/about"        style="color:var(--ink-tertiary);text-decoration:none;margin:0 12px;">About</a>
+  <a href="/rss/feed.xml" style="color:var(--ink-tertiary);text-decoration:none;">RSS</a>
+</footer>
+
+</body>
+</html>

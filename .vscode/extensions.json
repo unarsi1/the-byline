@@ -1,0 +1,30 @@
+{
+  "recommendations": [
+    // ── Java ─────────────────────────────────────────────────────────
+    "vscjava.vscode-java-pack",          // Java Extension Pack (all-in-one)
+    "vscjava.vscode-spring-initializr",  // Spring Initializr
+    "vmware.vscode-spring-boot",         // Spring Boot support
+    "vscjava.vscode-spring-boot-dashboard",
+    "redhat.java",                       // Language support for Java
+    "vscjava.vscode-java-debug",
+    "vscjava.vscode-java-test",
+    "vscjava.vscode-maven",              // Maven for Java
+
+    // ── Database ──────────────────────────────────────────────────────
+    "cweijan.vscode-postgresql-client2", // Postgres explorer
+
+    // ── Frontend ──────────────────────────────────────────────────────
+    "bradlc.vscode-tailwindcss",         // Tailwind CSS IntelliSense
+    "formulahendry.auto-rename-tag",
+    "ecmel.vscode-html-css",
+
+    // ── Docker ────────────────────────────────────────────────────────
+    "ms-azuretools.vscode-docker",
+
+    // ── Productivity ──────────────────────────────────────────────────
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",              // Inline error messages
+    "eamodio.gitlens"
+  ]
+}

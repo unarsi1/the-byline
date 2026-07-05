@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<nav th:fragment="nav" style="border-bottom:1px solid var(--surface-border);">
+  <div style="max-width:1200px;margin:0 auto;padding:14px 24px;
+              display:flex;align-items:center;justify-content:space-between;">
+
+    <!-- Brand -->
+    <a href="/" style="text-decoration:none;color:var(--ink-primary);">
+      <span class="serif" style="font-size:22px;font-weight:700;letter-spacing:-.3px;">
+        The Byline
+      </span>
+      <span style="display:inline-flex;gap:3px;margin-left:4px;vertical-align:4px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#1D9E75;display:inline-block;"></span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#378ADD;display:inline-block;"></span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#D4537E;display:inline-block;"></span>
+      </span>
+    </a>
+
+    <!-- Links -->
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="/topics"  style="font-size:13px;color:var(--ink-secondary);text-decoration:none;">Topics</a>
+      <a href="/authors" style="font-size:13px;color:var(--ink-secondary);text-decoration:none;">Authors</a>
+      <a href="/archive" style="font-size:13px;color:var(--ink-secondary);text-decoration:none;">Archive</a>
+
+      <!-- Authenticated -->
+      <span sec:authorize="isAuthenticated()">
+        <a href="/author/dashboard"
+           style="font-size:13px;color:var(--ink-secondary);text-decoration:none;">Dashboard</a>
+      </span>
+      <span sec:authorize="hasRole('ADMIN') or hasRole('EDITOR')">
+        <a href="/admin"
+           style="font-size:13px;color:var(--ink-secondary);text-decoration:none;">Admin</a>
+      </span>
+
+      <!-- CTA -->
+      <span sec:authorize="!isAuthenticated()">
+        <a href="/auth/login"
+           style="font-size:12px;padding:6px 14px;border:1px solid #3A3A3A;
+                  border-radius:8px;color:var(--ink-primary);text-decoration:none;">
+          Sign in
+        </a>
+        <a href="/auth/register"
+           style="font-size:12px;padding:6px 14px;border-radius:8px;
+                  background:var(--ink-primary);color:var(--surface);
+                  text-decoration:none;margin-left:8px;">
+          Subscribe
+        </a>
+      </span>
+      <!-- BUG-007 fix: logout requires POST in Spring Security 6; use a form instead of a link -->
+      <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/auth/logout}" method="post" style="display:inline;margin:0;padding:0;">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <button type="submit"
+                  style="font-size:12px;padding:6px 14px;border:1px solid #3A3A3A;
+                         border-radius:8px;color:var(--ink-secondary);background:transparent;
+                         cursor:pointer;font-family:'Inter',sans-serif;">
+            Sign out
+          </button>
+        </form>
+      </span>
+    </div>
+  </div>
+</nav>
+</html>
