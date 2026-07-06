@@ -12,6 +12,63 @@
     Site overview and management.
   </p>
 
+  <!-- Flash message -->
+  <div th:if="${success}"
+       style="background:rgba(29,158,117,.12);border:1px solid rgba(29,158,117,.3);
+              border-radius:8px;padding:12px 16px;margin-bottom:24px;
+              font-size:13px;color:#1D9E75;"
+       th:text="${success}">
+  </div>
+
+  <!-- ── Pending author approvals ─────────────────────────────────── -->
+  <section th:if="${!pendingAuthors.isEmpty()}" style="margin-bottom:36px;">
+    <h2 style="font-size:14px;font-weight:600;margin-bottom:12px;">
+      Pending author applications
+      <span style="background:#D4537E;color:#fff;font-size:11px;font-weight:600;
+                   border-radius:999px;padding:2px 8px;margin-left:8px;"
+            th:text="${pendingAuthors.size()}">0</span>
+    </h2>
+    <div style="border:1px solid var(--surface-border);border-radius:10px;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="background:var(--surface-raised);border-bottom:1px solid var(--surface-border);">
+            <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Name</th>
+            <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Username</th>
+            <th style="text-align:left;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Email</th>
+            <th style="text-align:right;padding:10px 14px;font-weight:600;color:var(--ink-secondary);">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="u, i : ${pendingAuthors}"
+              th:style="${i.odd ? 'background:var(--surface-raised)' : ''}">
+            <td style="padding:10px 14px;font-weight:500;" th:text="${u.displayName}">Name</td>
+            <td style="padding:10px 14px;color:var(--ink-tertiary);" th:text="${'@' + u.username}">@user</td>
+            <td style="padding:10px 14px;color:var(--ink-tertiary);" th:text="${u.email}">email</td>
+            <td style="padding:10px 14px;text-align:right;display:flex;gap:8px;justify-content:flex-end;">
+              <form th:action="@{/admin/users/{id}/approve(id=${u.id})}" method="post" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit"
+                        style="font-size:11px;padding:5px 12px;border-radius:6px;
+                               background:#1D9E75;color:#fff;border:none;cursor:pointer;font-weight:600;">
+                  Approve
+                </button>
+              </form>
+              <form th:action="@{/admin/users/{id}/reject(id=${u.id})}" method="post" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit"
+                        style="font-size:11px;padding:5px 12px;border-radius:6px;
+                               background:transparent;color:#D4537E;border:1px solid #D4537E;cursor:pointer;font-weight:600;"
+                        onclick="return confirm('Reject this application?')">
+                  Reject
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- Stats row -->
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:36px;">
     <div style="padding:20px;border-radius:10px;border:1px solid var(--surface-border);">
