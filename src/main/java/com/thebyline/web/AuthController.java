@@ -66,12 +66,16 @@ public class AuthController {
             return "auth/register";
         }
 
+        // First registered user becomes ADMIN; all subsequent users are READER
+        boolean isFirstUser = userRepository.count() == 0;
+        Role role = isFirstUser ? Role.ADMIN : Role.READER;
+
         User user = User.builder()
                 .email(email)
                 .username(username)
                 .displayName(displayName)
                 .passwordHash(passwordEncoder.encode(password))
-                .role(Role.READER)
+                .role(role)
                 .enabled(true)
                 .build();
 
