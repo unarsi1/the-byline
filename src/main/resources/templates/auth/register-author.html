@@ -8,10 +8,30 @@
 <div style="max-width:440px;margin:64px auto;padding:0 24px;">
 
   <h1 class="serif" style="font-size:1.8rem;font-weight:700;margin-bottom:8px;text-align:center;">
-    Apply as an Author
+    Join The Byline
   </h1>
-  <p style="text-align:center;font-size:13px;color:var(--ink-secondary);margin-bottom:32px;">
-    Submit your application — our editors will review and approve it.
+  <p style="text-align:center;font-size:13px;color:var(--ink-secondary);margin-bottom:24px;">
+    Choose how you'd like to participate
+  </p>
+
+  <!-- Registration type selector -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+    <a href="/auth/register"
+       style="padding:14px;border-radius:10px;text-decoration:none;text-align:center;
+              border:1px solid var(--surface-border);background:var(--surface-raised);">
+      <div style="font-size:13px;font-weight:600;color:var(--ink-primary);">Subscriber</div>
+      <div style="font-size:11px;color:var(--ink-tertiary);margin-top:3px;">Read &amp; follow authors</div>
+    </a>
+    <a href="/auth/register/author"
+       style="padding:14px;border-radius:10px;text-decoration:none;text-align:center;
+              border:2px solid var(--brand);background:rgba(29,158,117,.06);">
+      <div style="font-size:13px;font-weight:600;color:var(--brand);">Author</div>
+      <div style="font-size:11px;color:var(--ink-tertiary);margin-top:3px;">Apply to write for us</div>
+    </a>
+  </div>
+
+  <p style="text-align:center;font-size:12px;color:var(--ink-tertiary);margin-bottom:20px;">
+    Author applications are reviewed by our editorial team before approval.
   </p>
 
   <!-- Success (shouldn't show here but just in case) -->

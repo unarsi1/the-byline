@@ -34,19 +34,55 @@
       </span>
 
       <!-- CTA -->
-      <span sec:authorize="!isAuthenticated()">
+      <span sec:authorize="!isAuthenticated()" style="display:flex;align-items:center;gap:8px;">
         <a href="/auth/login"
            style="font-size:12px;padding:6px 14px;border:1px solid #3A3A3A;
                   border-radius:8px;color:var(--ink-primary);text-decoration:none;">
           Sign in
         </a>
-        <a href="/auth/register"
-           style="font-size:12px;padding:6px 14px;border-radius:8px;
-                  background:var(--ink-primary);color:var(--surface);
-                  text-decoration:none;margin-left:8px;">
-          Subscribe
-        </a>
+        <!-- Register dropdown -->
+        <div style="position:relative;display:inline-block;" id="nav-register-wrap">
+          <button onclick="document.getElementById('nav-register-menu').classList.toggle('open')"
+                  style="font-size:12px;padding:6px 14px;border-radius:8px;
+                         background:var(--ink-primary);color:var(--surface);
+                         border:none;cursor:pointer;font-family:'Inter',sans-serif;
+                         display:flex;align-items:center;gap:5px;">
+            Get started
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+              <path d="M1 3l4 4 4-4"/>
+            </svg>
+          </button>
+          <div id="nav-register-menu"
+               style="display:none;position:absolute;right:0;top:calc(100% + 6px);
+                      background:var(--surface-raised);border:1px solid var(--surface-border);
+                      border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);
+                      min-width:200px;z-index:999;overflow:hidden;">
+            <a href="/auth/register"
+               style="display:block;padding:12px 16px;text-decoration:none;color:var(--ink-primary);
+                      border-bottom:1px solid var(--surface-border);">
+              <div style="font-size:13px;font-weight:600;">Subscribe</div>
+              <div style="font-size:11px;color:var(--ink-tertiary);margin-top:2px;">Read and follow authors</div>
+            </a>
+            <a href="/auth/register/author"
+               style="display:block;padding:12px 16px;text-decoration:none;color:var(--ink-primary);">
+              <div style="font-size:13px;font-weight:600;">Write for The Byline</div>
+              <div style="font-size:11px;color:var(--ink-tertiary);margin-top:2px;">Apply as an author</div>
+            </a>
+          </div>
+        </div>
       </span>
+      <script>
+        document.addEventListener('click', function(e) {
+          var wrap = document.getElementById('nav-register-wrap');
+          var menu = document.getElementById('nav-register-menu');
+          if (wrap && menu && !wrap.contains(e.target)) menu.classList.remove('open');
+        });
+        (function() {
+          var style = document.createElement('style');
+          style.textContent = '#nav-register-menu.open { display: block !important; }';
+          document.head.appendChild(style);
+        })();
+      </script>
       <!-- BUG-007 fix: logout requires POST in Spring Security 6; use a form instead of a link -->
       <span sec:authorize="isAuthenticated()">
         <form th:action="@{/auth/logout}" method="post" style="display:inline;margin:0;padding:0;">
